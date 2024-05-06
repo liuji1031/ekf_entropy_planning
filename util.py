@@ -5,11 +5,11 @@ from scipy.optimize import minimize
 from scipy.spatial.transform import Rotation
 
 def plot_robot(ax, handle, x, y, yaw):
-    d = 0.1
+    d = 0.2
     if handle is None:
         # set up new plot
         handle = [ax.plot(x,y,label='robot',
-                                    ms=6,color='b',marker='o',ls='')[0],
+                                    ms=4,color='b',marker='o',ls='')[0],
                   ax.plot([x,x+d*np.cos(yaw)],
                             [y,y+d*np.sin(yaw)],
                             color='r')[0], # x axis, body frame
@@ -24,6 +24,40 @@ def plot_robot(ax, handle, x, y, yaw):
                                     [y,y+d*np.sin(yaw)])
         handle[2].set_data([x,x+d*np.cos(yaw+np.pi/2)],
                                     [y,y+d*np.sin(yaw+np.pi/2)])
+        
+    return handle
+
+def plot_robot_traj(ax, handle, traj_x, traj_y):
+    if handle is None:
+        # set up new plot
+        handle = ax.plot(traj_x,traj_y,label='robot',
+                        ms=1,color='b',marker='o',ls='-')[0]
+
+    else:
+        # update data only
+        handle.set_data(traj_x,traj_y)
+
+    return handle
+
+def plot_fov(ax, handle, x, y, yaw, fov):
+    d = 1.0
+    if handle is None:
+        # set up new plot
+        handle = [ax.plot([x,x+d*np.cos(yaw+fov/2)],
+                            [y,y+d*np.sin(yaw+fov/2)],
+                            color=(0.5,0.5,0.5),
+                            linestyle=":")[0], # x axis, body frame
+                  ax.plot([x,x+d*np.cos(yaw-fov/2)],
+                            [y,y+d*np.sin(yaw-fov/2)],
+                            color=(0.5,0.5,0.5),
+                            linestyle=":")[0] # y axis
+                ]
+    else:
+        # update data only
+        handle[0].set_data([x,x+d*np.cos(yaw+fov/2)],
+                            [y,y+d*np.sin(yaw+fov/2)])
+        handle[1].set_data([x,x+d*np.cos(yaw-fov/2)],
+                            [y,y+d*np.sin(yaw-fov/2)])
         
     return handle
 
