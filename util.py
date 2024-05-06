@@ -1,7 +1,35 @@
 #!/usr/bin/python3
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.optimize import minimize
 from scipy.spatial.transform import Rotation
+
+def plot_robot(ax, handle, x, y, yaw):
+    d = 0.1
+    if handle is None:
+        # set up new plot
+        handle = [ax.plot(x,y,label='robot',
+                                    ms=6,color='b',marker='o',ls='')[0],
+                  ax.plot([x,x+d*np.cos(yaw)],
+                            [y,y+d*np.sin(yaw)],
+                            color='r')[0], # x axis, body frame
+                  ax.plot([x,x+d*np.cos(yaw+np.pi/2)],
+                            [y,y+d*np.sin(yaw+np.pi/2)],
+                            color='g')[0] # y axis
+                ]
+    else:
+        # update data only
+        handle[0].set_data(x,y)
+        handle[1].set_data([x,x+d*np.cos(yaw)],
+                                    [y,y+d*np.sin(yaw)])
+        handle[2].set_data([x,x+d*np.cos(yaw+np.pi/2)],
+                                    [y,y+d*np.sin(yaw+np.pi/2)])
+        
+    return handle
+
+def plot_scene_pt_ground_truth(scene_pts):
+    for pt in scene_pts:
+        plt.plot(pt[0],pt[1],ms=6,color='b',marker='+')
 
 def angle_between_yaw(yaw1, yaw2):
     """calculates the angle between two frames
